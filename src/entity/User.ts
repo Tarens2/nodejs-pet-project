@@ -5,9 +5,13 @@ import {
     Unique,
     CreateDateColumn,
     UpdateDateColumn,
+    BeforeInsert
 } from "typeorm";
 import { Length, IsNotEmpty } from "class-validator";
 import * as bcrypt from "bcryptjs";
+
+
+export type UserRoleType = "admin" | "common" | "ghost";
 
 @Entity()
 @Unique(["username"])
@@ -27,9 +31,12 @@ export class User {
     @Length(4, 100)
     password: string;
 
-    @Column()
-    @IsNotEmpty()
-    role: string;
+    @Column({
+        type: "enum",
+        enum: ["admin", "common", "ghost"],
+        default: "ghost"
+    })
+    role: UserRoleType;
 
     @Column()
     @CreateDateColumn()
@@ -39,6 +46,7 @@ export class User {
     @UpdateDateColumn()
     updatedAt: Date;
 
+    @BeforeInsert()
     hashPassword() {
         this.password = bcrypt.hashSync(this.password, 8);
     }

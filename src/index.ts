@@ -4,7 +4,6 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as helmet from "helmet";
 import * as cors from "cors";
-import { Request, Response } from "express";
 import routes from "./routes";
 import { PORT } from './config';
 import withSeeds from './seed'
@@ -16,9 +15,12 @@ createConnection().then(async connection => {
     // Call midlewares
     app.use(cors());
     app.use(helmet());
+    app.use(bodyParser.urlencoded({
+        extended: true
+    }));
     app.use(bodyParser.json());
+    app.use("/api", routes);
 
-    app.use("/", routes);
     withAuth(app);
 
     app.listen(PORT);

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { getRepository } from "typeorm";
-import { User } from "../entity/User";
+import { User, UserRoleType } from "../entity/User";
 
-export const checkRole = (roles: Array<string>) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
+export const checkRole = (roles: Array<UserRoleType>) =>
+    async (req: Request, res: Response, next: NextFunction) => {
         //Get the user ID from previous midleware
         const id = res.locals.jwtPayload.userId;
 
@@ -20,4 +20,3 @@ export const checkRole = (roles: Array<string>) => {
         if (roles.indexOf(user.role) > -1) next();
         else res.status(401).send();
     };
-};
