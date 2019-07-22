@@ -1,8 +1,9 @@
 import { Strategy } from 'passport-github';
 import { Strategy as LocalStrategy } from 'passport-local';
-import {APP_SECRET, GITHUB_KEY, GITHUB_SECRET} from "./config";
+import config, {APP_SECRET, GITHUB_KEY, GITHUB_SECRET} from "./config";
 import {getRepository} from "typeorm";
 import {User} from "./entity/User";
+import * as jwt from "jsonwebtoken";
 const passport = require('passport');
 
 passport.use(new Strategy({
@@ -12,34 +13,21 @@ passport.use(new Strategy({
     },
     async function(accessToken, refreshToken, profile, cb) {
         const userRepository = getRepository(User);
-        const user: User = await userRepository.findOne({
+        let user: User = await userRepository.findOne({
             githubId: profile.id,
         });
 
         if (!user) {
-            await userRepository.save({
-                githubId: profile.id,
-                username: profile.username,
-                email: null
-            })
+            user = new User();
+            user.githubId = profile.id;
+            user.username = profile.username;
+
+            await userRepository.save(user)
         }
 
-        return cb(null, profile);
+        return cb(null, user);
     })
 );
-
-// passport.use(new LocalStrategy({
-//     usernameField: 'user[email]',
-//     passwordField: 'user[password]',
-// }, async (email, password, done) => {
-//     const userRepository = getRepository(User);
-//     const user: User = await userRepository.findOne({ email })
-//     if(!user || !user.validatePassword(password)) {
-//         return done(null, false, { errors: { 'email or password': 'is invalid' } });
-//     }
-//
-//     return done(null, user);
-// }));
 
 passport.serializeUser(function(user, cb) {
     cb(null, user);
@@ -59,6 +47,12 @@ export default function withAuth(app) {
     app.get('/api/auth/github/callback',
         passport.authenticate('github', { failureRedirect: '/sign-in' }),
         function(req, res) {
+            const token = jwt.sign(
+                { userId: req.user.id, username: req.user.username },
+                config.jwtSecret,
+                { expiresIn: "1h" }
+            );
+
             res.redirect('/');
         }
     );

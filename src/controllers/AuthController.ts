@@ -5,7 +5,6 @@ import { validate } from "class-validator";
 
 import { User } from "../entity/User";
 import config from "../config";
-import {create} from "domain";
 
 class AuthController {
     static login = async (req: Request, res: Response) => {
@@ -28,8 +27,7 @@ class AuthController {
                         { expiresIn: "1h" }
                     );
 
-                    //Send the jwt in the response
-                    res.send(token);
+                    res.send({ token, user });
                 }
             } catch (error) {
                 res.status(401).send();
@@ -39,14 +37,14 @@ class AuthController {
 
     static register = async (req: Request, res: Response, next: NextFunction) => {
         let { username, password, passwordConfirmation } = req.body;
-        if (!(username && password)) {
+        if (!(username && password && passwordConfirmation)) {
             res.sendStatus(400);
         } else {
             const userRepository = getRepository(User);
             const user: User = await userRepository.findOne({ where: { username } });
 
             if (user || password !== passwordConfirmation) {
-                res.sendStatus(400);
+                res.sendStatus(401);
             } else {
                 const createUser : User = new User();
 
@@ -61,7 +59,7 @@ class AuthController {
                         { expiresIn: "1h" }
                     );
 
-                    res.json({ token });
+                    res.json({ token, user: createUser });
                 } catch (e) {
                     next(e);
                     res.sendStatus(500);

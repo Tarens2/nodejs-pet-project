@@ -26,7 +26,6 @@ export class User {
     @Column({ nullable: true })
     githubId: string | null;
 
-
     @Column()
     @Length(4, 100)
     password: string;
@@ -48,7 +47,11 @@ export class User {
 
     @BeforeInsert()
     hashPassword() {
-        this.password = bcrypt.hashSync(this.password, 8);
+        if (this.githubId) {
+            this.password = bcrypt.hashSync(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), 8);
+        } else {
+            this.password = bcrypt.hashSync(this.password, 8);
+        }
     }
 
     checkIfUnencryptedPasswordIsValid(unencryptedPassword: string) {
