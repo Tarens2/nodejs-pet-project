@@ -7,21 +7,19 @@ import * as cors from "cors";
 import routes from "./routes";
 import { PORT } from './config';
 import withSeeds from './seed'
-import withAuth from "./auth";
+import initStrategies from "./initStrategies";
+const passport = require('passport');
 
 createConnection().then(async connection => {
     const app = express();
 
-    // Call midlewares
     app.use(cors());
     app.use(helmet());
-    app.use(bodyParser.urlencoded({
-        extended: true
-    }));
+    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
+    app.use(passport.initialize());
+    initStrategies();
     app.use("/api", routes);
-
-    withAuth(app);
 
     app.listen(PORT);
 

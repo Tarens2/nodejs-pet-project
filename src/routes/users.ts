@@ -1,27 +1,13 @@
-import {UserController} from "../controllers/UserController";
+import { Router } from "express";
+import UsersController  from "../controllers/UsersController";
+const passport = require('passport');
 
-export const Routes = [{
-    method: "get",
-    route: "/users",
-    controller: UserController,
-    action: "all"
-}, {
-    method: "get",
-    route: "/users/:id",
-    controller: UserController,
-    action: "one"
-}, {
-    method: "post",
-    route: "/users",
-    controller: UserController,
-    action: "save"
-}, {
-    method: "delete",
-    route: "/users/:id",
-    controller: UserController,
-    action: "remove"
-}];
 
+const router = Router();
+router.get("/me", passport.authenticate('jwt'), UsersController.me);
+
+
+export default router;
 
 // register express routes from defined application routes
 // Routes.forEach(route => {

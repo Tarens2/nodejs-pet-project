@@ -26,6 +26,12 @@ export class User {
     @Column({ nullable: true })
     githubId: string | null;
 
+    @Column({ nullable: true })
+    token: string | null;
+
+    @Column({ nullable: true })
+    email: string | null;
+
     @Column()
     @Length(4, 100)
     password: string;
@@ -48,7 +54,8 @@ export class User {
     @BeforeInsert()
     hashPassword() {
         if (this.githubId) {
-            this.password = bcrypt.hashSync(Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15), 8);
+            const randomPass = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            this.password = bcrypt.hashSync(randomPass, 8);
         } else {
             this.password = bcrypt.hashSync(this.password, 8);
         }
