@@ -32,7 +32,7 @@ export class User {
     @Column({ nullable: true })
     email: string | null;
 
-    @Column({ select: false })
+    @Column()
     @Length(4, 100)
     password: string;
 

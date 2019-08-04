@@ -5,7 +5,7 @@ const passport = require('passport');
 
 const router = Router();
 
-router.post("/login", passport.authenticate('local'), AuthController.login);
+// router.post("/login", passport.authenticate('local'), AuthController.login);
 router.get("/profile", passport.authenticate('jwt'), AuthController.profile);
 router.get('/github', passport.authenticate('github', { session: false }));
 router.get('/github/callback', passport.authenticate('github', { session: false }), AuthController.githubLogin);

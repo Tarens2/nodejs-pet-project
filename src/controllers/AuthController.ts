@@ -3,17 +3,24 @@ import * as jwt from "jsonwebtoken";
 import config from "../config";
 import {User} from "../entity/User";
 import {getRepository} from "typeorm";
+import {JsonController, Post, Req, Res, UseBefore} from "routing-controllers";
+import {IGetUserAuthInfoRequest} from "../types/IGetUserAuthInfoReques";
+const passport = require('passport');
 
+@JsonController('/auth')
 class AuthController {
-    static login = async (req, res: Response) => {
-        if (req.user) {
+
+    @Post("/login")
+    @UseBefore(passport.authenticate('local'))
+    login(@Req() request: IGetUserAuthInfoRequest, @Res() response: Response) {
+        if (request.user) {
             const token = jwt.sign(
-                { userId: req.user.id, username: req.user.username },
+                { userId: request.user.id, username: request.user.username },
                 config.JWT_SECRET,
                 { expiresIn: "1h" }
             );
 
-            res.send({ token, user: req.user });
+            response.send({ token, user: request.user });
         }
     };
 
@@ -63,7 +70,7 @@ class AuthController {
             }
         }
     };
-    //
+
     // static changePassword = async (req: Request, res: Response) => {
     //     //Get ID from JWT
     //     const id = res.locals.jwtPayload.userId;

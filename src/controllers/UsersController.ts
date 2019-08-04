@@ -1,13 +1,10 @@
 import {getRepository} from "typeorm";
-import {NextFunction, Request, Response} from "express";
+import {Response} from "express";
 import {User} from "../entity/User";
 import {JsonController, Param, Body, Get, Post, Put, Delete, UseBefore, Req, Res} from "routing-controllers";
+import {IGetUserAuthInfoRequest} from "../types/IGetUserAuthInfoReques";
 
 const passport = require('passport');
-
-export interface IGetUserAuthInfoRequest extends Request {
-    user: User
-}
 
 @JsonController('/users')
 export default class UsersController {
