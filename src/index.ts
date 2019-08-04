@@ -8,6 +8,7 @@ import routes from "./routes";
 import { PORT } from './config';
 import withSeeds from './seed'
 import initStrategies from "./initStrategies";
+import {useExpressServer} from "routing-controllers";
 const passport = require('passport');
 
 createConnection().then(async connection => {
@@ -20,6 +21,11 @@ createConnection().then(async connection => {
     app.use(passport.initialize());
     initStrategies();
     app.use("/api", routes);
+
+    useExpressServer(app, {
+        routePrefix: "/api",
+        controllers: [__dirname + '/controllers/*.ts']
+    });
 
     app.listen(PORT);
 

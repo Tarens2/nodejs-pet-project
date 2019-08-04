@@ -1,32 +1,46 @@
 import {getRepository} from "typeorm";
 import {NextFunction, Request, Response} from "express";
 import {User} from "../entity/User";
+import {JsonController, Param, Body, Get, Post, Put, Delete, UseBefore, Req, Res} from "routing-controllers";
 
+const passport = require('passport');
+
+export interface IGetUserAuthInfoRequest extends Request {
+    user: User
+}
+
+@JsonController('/users')
 export default class UsersController {
+    userRepository = getRepository(User);
 
-    static async me(request, response: Response) {
-        return response.send({ user: request.user })
+    @Get("")
+    getAll() {
+        return this.userRepository.find();
     }
 
-    static async all(request: Request, response: Response, next: NextFunction) {
-        const userRepository = getRepository(User);
-        return userRepository.find();
+    @Get("/me")
+    @UseBefore(passport.authenticate('jwt'))
+    getMe(@Req() request: IGetUserAuthInfoRequest, @Res() response: Response) {
+        return this.userRepository.find({ where: { username: request.user.username }});
     }
 
-    static async one(request: Request, response: Response, next: NextFunction) {
-        const userRepository = getRepository(User);
-        return userRepository.findOne(request.params.id);
+    @Get("/:id")
+    getOne(@Param("id") id: number) {
+        return this.userRepository.findOne(id);
     }
 
-    static async save(request: Request, response: Response, next: NextFunction) {
-        const userRepository = getRepository(User);
-        return userRepository.save(request.body);
+    @Post("")
+    post(@Body() user: User) {
+        return this.userRepository.insert(user);
     }
 
-    static async remove(request: Request, response: Response, next: NextFunction) {
-        const userRepository = getRepository(User);
-        let userToRemove = await userRepository.findOne(request.params.id);
-        await userRepository.remove(userToRemove);
+    @Put("/:id")
+    put(@Param("id") id: number, @Body() user: User) {
+        return this.userRepository.update(id, user);
     }
 
+    @Delete("/:id")
+    remove(@Param("id") id: number) {
+        return this.userRepository.remove(({ id } as User));
+    }
 }

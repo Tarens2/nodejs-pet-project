@@ -33,6 +33,7 @@
       "passport-twitter": "^1.0.4",
       "pg": "^7.3.0",
       "reflect-metadata": "^0.1.10",
+      "routing-controllers": "^0.7.7",
       "socket.io": "^2.2.0",
       "ts-node-dev": "^1.0.0-pre.40",
       "typeorm": "0.2.17"

@@ -31,38 +31,38 @@ class AuthController {
     };
 
 
-    // static register = async (req: Request, res: Response, next: NextFunction) => {
-    //     let { username, password, passwordConfirmation } = req.body;
-    //     if (!(username && password && passwordConfirmation)) {
-    //         res.sendStatus(400);
-    //     } else {
-    //         const userRepository = getRepository(User);
-    //         const user: User = await userRepository.findOne({ where: { username } });
-    //
-    //         if (user || password !== passwordConfirmation) {
-    //             res.sendStatus(401);
-    //         } else {
-    //             const createUser : User = new User();
-    //
-    //             createUser.username = username;
-    //             createUser.password = password;
-    //             try {
-    //                 await userRepository.save(createUser);
-    //
-    //                 const token = jwt.sign(
-    //                     { userId: createUser.id, username: createUser.username },
-    //                     config.JWT_SECRET,
-    //                     { expiresIn: "1h" }
-    //                 );
-    //
-    //                 res.json({ token, user: createUser });
-    //             } catch (e) {
-    //                 next(e);
-    //                 res.sendStatus(500);
-    //             }
-    //         }
-    //     }
-    // };
+    static register = async (req: Request, res: Response, next: NextFunction) => {
+        let { username, password, passwordConfirmation } = req.body;
+        if (!(username && password && passwordConfirmation)) {
+            res.sendStatus(400);
+        } else {
+            const userRepository = getRepository(User);
+            const user: User = await userRepository.findOne({ where: { username } });
+
+            if (user || password !== passwordConfirmation) {
+                res.sendStatus(401);
+            } else {
+                const createUser : User = new User();
+
+                createUser.username = username;
+                createUser.password = password;
+                try {
+                    await userRepository.save(createUser);
+
+                    const token = jwt.sign(
+                        { userId: createUser.id, username: createUser.username },
+                        config.JWT_SECRET,
+                        { expiresIn: "1h" }
+                    );
+
+                    res.json({ token, user: createUser });
+                } catch (e) {
+                    next(e);
+                    res.sendStatus(500);
+                }
+            }
+        }
+    };
     //
     // static changePassword = async (req: Request, res: Response) => {
     //     //Get ID from JWT
