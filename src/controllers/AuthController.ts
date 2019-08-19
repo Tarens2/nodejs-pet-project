@@ -12,6 +12,8 @@ import {
   Get
 } from "routing-controllers";
 import { IGetUserAuthInfoRequest } from "../types/IGetUserAuthInfoReques";
+import { check, body, validationResult } from "express-validator";
+
 const passport = require("passport");
 
 @JsonController("/auth")
@@ -42,21 +44,41 @@ class AuthController {
   }
 
   @Post("/register")
+  @UseBefore(
+    body("username").exists(),
+    body("password").exists(),
+    body("passwordConfirmation").exists(),
+    body("passwordConfirmation").custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Password confirmation does not match password");
+      }
+
+      return true;
+    }),
+
+    check("username").custom(async value => {
+      const userRepository = getRepository(User);
+      const user: User = await userRepository.findOne({
+        where: { username: value }
+      });
+      if (user) {
+        throw new Error("E-mail already in use");
+      }
+      return true;
+    })
+  )
   async register(@Req() req: Request, @Res() res: Response) {
-    let { username, password, passwordConfirmation } = req.body;
-    if (!(username && password && passwordConfirmation)) {
-      return res.sendStatus(400);
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
     }
+
+    let { username, password } = req.body;
 
     const userRepository = getRepository(User);
-    const user: User = await userRepository.findOne({ where: { username } });
-
-    if (user || password !== passwordConfirmation) {
-      return res.sendStatus(401);
-    }
 
     const createUser: User = new User();
-
     createUser.username = username;
     createUser.password = password;
     try {
