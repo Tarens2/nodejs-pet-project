@@ -12,7 +12,7 @@ import {
   Get
 } from "routing-controllers";
 import { IGetUserAuthInfoRequest } from "../types/IGetUserAuthInfoReques";
-import { check, body, validationResult } from "express-validator";
+import { body, validationResult } from "express-validator";
 
 const passport = require("passport");
 
@@ -45,27 +45,30 @@ class AuthController {
 
   @Post("/register")
   @UseBefore(
-    body("username").exists(),
-    body("password").exists(),
-    body("passwordConfirmation").exists(),
-    body("passwordConfirmation").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Password confirmation does not match password");
-      }
+    body("username")
+      .exists({ checkFalsy: true })
+      .custom(async value => {
+        const userRepository = getRepository(User);
+        const user: User = await userRepository.findOne({
+          where: { username: value }
+        });
+        if (user) {
+          throw new Error("E-mail already in use");
+        }
+        return true;
+      }),
 
-      return true;
-    }),
+    body("password").exists({ checkFalsy: true }),
 
-    check("username").custom(async value => {
-      const userRepository = getRepository(User);
-      const user: User = await userRepository.findOne({
-        where: { username: value }
-      });
-      if (user) {
-        throw new Error("E-mail already in use");
-      }
-      return true;
-    })
+    body("passwordConfirmation")
+      .exists({ checkFalsy: true })
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Password confirmation does not match password");
+        }
+
+        return true;
+      })
   )
   async register(@Req() req: Request, @Res() res: Response) {
     const errors = validationResult(req);
