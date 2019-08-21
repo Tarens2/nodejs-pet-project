@@ -26,12 +26,6 @@ export default class UsersController {
     return this.userRepository.find();
   }
 
-  @Get("/me")
-  @UseBefore(passport.authenticate("jwt"))
-  getMe(@Req() req: IGetUserAuthInfoRequest) {
-    return this.userRepository.find({ where: { username: req.user.username } });
-  }
-
   @Get("/:id")
   getOne(@Param("id") id: number) {
     return this.userRepository.findOne(id);

@@ -18,6 +18,13 @@ const passport = require("passport");
 
 @JsonController("/auth")
 class AuthController {
+
+  @Get("/me")
+  @UseBefore(passport.authenticate("jwt"))
+  getMe(@Req() req: IGetUserAuthInfoRequest) {
+    return req.user;
+  }
+
   @Post("/login")
   @UseBefore(passport.authenticate("local"))
   login(@Req() request: IGetUserAuthInfoRequest, @Res() response: Response) {
@@ -32,16 +39,9 @@ class AuthController {
     }
   }
 
-  @Get("/login")
+  @Get("/github")
   @UseBefore(passport.authenticate("github", { session: false }))
-  githubLogin(req, res) {
-    const token = jwt.sign(
-      { userId: req.user.id, username: req.user.username },
-      config.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-    res.send({ token, user: req.user });
-  }
+  githubLogin() {}
 
   @Post("/register")
   @UseBefore(
