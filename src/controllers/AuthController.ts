@@ -32,7 +32,7 @@ class AuthController {
       const token = jwt.sign(
         { userId: request.user.id, username: request.user.username },
         config.JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "1m" }
       );
 
       response.send({ token, user: request.user });
@@ -41,7 +41,19 @@ class AuthController {
 
   @Get("/github")
   @UseBefore(passport.authenticate("github", { session: false }))
-  githubLogin() {}
+  github() {}
+
+  @Get("/github/callback")
+  @UseBefore(passport.authenticate("github", { session: false }))
+  githubLogin(@Req() req: IGetUserAuthInfoRequest, @Res() res: Response) {
+    const token = jwt.sign(
+        { userId: req.user.id, username: req.user.username },
+        config.JWT_SECRET,
+        { expiresIn: "1h" }
+    );
+
+    res.send({ token, user: req.user });
+  }
 
   @Post("/register")
   @UseBefore(
@@ -90,7 +102,7 @@ class AuthController {
       const token = jwt.sign(
         { userId: createUser.id, username: createUser.username },
         config.JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "1m" }
       );
 
       return res.json({ token, user: createUser });
