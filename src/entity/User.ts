@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Length } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
+import generateRandomPassword from '../lib/generateRandomPassword';
 
 export type UserRoleType = 'admin' | 'common' | 'ghost';
 
@@ -53,13 +54,7 @@ export class User {
   @BeforeInsert()
   hashPassword() {
     if (this.githubId) {
-      const randomPass = Math.random()
-        .toString(36)
-        .substring(2, 15)
-        + Math.random()
-          .toString(36)
-          .substring(2, 15);
-      this.password = bcrypt.hashSync(randomPass, 8);
+      this.password = bcrypt.hashSync(generateRandomPassword(), 8);
     } else {
       this.password = bcrypt.hashSync(this.password, 8);
     }
