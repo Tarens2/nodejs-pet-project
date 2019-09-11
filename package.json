@@ -60,7 +60,7 @@
     "dev": "set debug=* && ts-node-dev --inspect=5858 --respawn --transpileOnly ./src/index.ts",
     "prod": "tsc && node ./build/app.js",
     "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
   },
   "nodemonConfig": {
     "ignore": [

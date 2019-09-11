@@ -1,6 +1,4 @@
-import { getRepository } from "typeorm";
-import { Response } from "express";
-import { User } from "../entity/User";
+import { getRepository } from 'typeorm';
 import {
   JsonController,
   Param,
@@ -9,40 +7,35 @@ import {
   Post,
   Put,
   Delete,
-  UseBefore,
-  Req,
-  Res
-} from "routing-controllers";
-import { IGetUserAuthInfoRequest } from "../types/IGetUserAuthInfoReques";
+} from 'routing-controllers';
+import { User } from '../entity/User';
 
-const passport = require("passport");
-
-@JsonController("/users")
+@JsonController('/users')
 export default class UsersController {
   userRepository = getRepository(User);
 
-  @Get("")
+  @Get('')
   getAll() {
     return this.userRepository.find();
   }
 
-  @Get("/:id")
-  getOne(@Param("id") id: number) {
+  @Get('/:id')
+  getOne(@Param('id') id: number) {
     return this.userRepository.findOne(id);
   }
 
-  @Post("")
+  @Post('')
   post(@Body() user: User) {
     return this.userRepository.insert(user);
   }
 
-  @Put("/:id")
-  put(@Param("id") id: number, @Body() user: User) {
+  @Put('/:id')
+  put(@Param('id') id: number, @Body() user: User) {
     return this.userRepository.update(id, user);
   }
 
-  @Delete("/:id")
-  remove(@Param("id") id: number) {
+  @Delete('/:id')
+  remove(@Param('id') id: number) {
     return this.userRepository.remove({ id } as User);
   }
 }

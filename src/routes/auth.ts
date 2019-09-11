@@ -1,7 +1,4 @@
-import { Router } from "express";
-import AuthController from "../controllers/AuthController";
-import * as jwt from "jsonwebtoken";
-const passport = require("passport");
+import { Router } from 'express';
 
 const router = Router();
 
