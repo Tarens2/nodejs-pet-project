@@ -3,8 +3,21 @@
   "version": "0.0.1",
   "description": "Awesome project developed with TypeORM.",
   "devDependencies": {
-    "ts-node": "3.3.0",
     "@types/node": "^8.0.29",
+    "@typescript-eslint/eslint-plugin": "^2.2.0",
+    "@typescript-eslint/parser": "^2.2.0",
+    "eslint": "^6.3.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-import-resolver-typescript": "^1.1.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-json": "^1.4.0",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "prettier": "^1.18.2",
+    "ts-node": "3.3.0",
     "typescript": "3.3.3333"
   },
   "dependencies": {
@@ -46,7 +59,8 @@
     "tsc": "tsc",
     "dev": "set debug=* && ts-node-dev --inspect=5858 --respawn --transpileOnly ./src/index.ts",
     "prod": "tsc && node ./build/app.js",
-    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
+    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "nodemonConfig": {
     "ignore": [
