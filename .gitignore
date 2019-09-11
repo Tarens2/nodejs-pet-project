@@ -4,3 +4,5 @@ node_modules/
 build/
 tmp/
 temp/
+logfile
+ormconfig.json
