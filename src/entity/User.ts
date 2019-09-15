@@ -11,7 +11,11 @@ import { Length } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 import generateRandomPassword from '../lib/generateRandomPassword';
 
-export type UserRoleType = 'admin' | 'common' | 'ghost';
+export enum UserRole {
+  ADMIN = 'admin',
+  COMMON = 'common',
+  GHOST = 'ghost',
+}
 
 @Entity()
 @Unique(['username'])
@@ -38,10 +42,10 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: ['admin', 'common', 'ghost'],
-    default: 'ghost',
+    enum: UserRole,
+    default: UserRole.GHOST,
   })
-  role: UserRoleType;
+  role: UserRole;
 
   @Column()
   @CreateDateColumn()

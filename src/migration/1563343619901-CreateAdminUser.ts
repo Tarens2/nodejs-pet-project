@@ -1,5 +1,5 @@
 import { getRepository, MigrationInterface } from 'typeorm';
-import { User } from '../entity/User';
+import { User, UserRole } from '../entity/User';
 
 export class CreateAdminUser1563343619901 implements MigrationInterface {
   public async up() {
@@ -7,7 +7,7 @@ export class CreateAdminUser1563343619901 implements MigrationInterface {
     user.username = 'admin';
     user.password = 'admin';
     user.hashPassword();
-    user.role = 'admin';
+    user.role = UserRole.ADMIN;
     const userRepository = getRepository(User);
     await userRepository.save(user);
   }

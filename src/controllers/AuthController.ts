@@ -10,7 +10,6 @@ import {
   Get,
 } from 'routing-controllers';
 import { body, validationResult } from 'express-validator';
-import { JWT_SECRET } from '../config';
 import { User } from '../entity/User';
 import { GetUserAuthInfoRequest } from '../types/IGetUserAuthInfoReques';
 
@@ -30,8 +29,8 @@ class AuthController {
     if (request.user) {
       const token = jwt.sign(
         { userId: request.user.id, username: request.user.username },
-        JWT_SECRET,
-        { expiresIn: '1m' },
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' },
       );
 
       response.send({ token, user: request.user });
@@ -40,6 +39,7 @@ class AuthController {
 
   @Get('/github')
   @UseBefore(passport.authenticate('github', { session: false }))
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   github() {}
 
   @Get('/github/callback')
@@ -47,7 +47,7 @@ class AuthController {
   githubLogin(@Req() req: GetUserAuthInfoRequest, @Res() res: Response) {
     const token = jwt.sign(
       { userId: req.user.id, username: req.user.username },
-      JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: '1h' },
     );
 
@@ -100,7 +100,7 @@ class AuthController {
 
       const token = jwt.sign(
         { userId: createUser.id, username: createUser.username },
-        JWT_SECRET,
+        process.env.JWT_SECRET,
         { expiresIn: '1m' },
       );
 
