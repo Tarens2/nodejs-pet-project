@@ -12,38 +12,38 @@ import {
   UseInterceptor,
   UploadedFile,
 } from 'routing-controllers';
-import { Photo } from '../entity/Photo';
+import { Article } from '../entity/Article';
 import { GetUserAuthInfoRequest } from '../types/IGetUserAuthInfoReques';
 
 const passport = require('passport');
 
-@JsonController('/photos')
+@JsonController('/articles')
 export default class PhotosController {
-  photoRepository = getRepository(Photo);
+  articleRepository = getRepository(Article);
 
   @Get('')
   getAll() {
-    return this.photoRepository.find();
+    return this.articleRepository.find();
   }
 
   @Get('/:id')
   getOne(@Param('id') id: number) {
-    return this.photoRepository.findOne(id);
+    return this.articleRepository.findOne(id);
   }
 
   @Post('')
   @UseBefore(passport.authenticate('jwt'))
-  post(@Req() req: GetUserAuthInfoRequest, @Body() photo: Photo) {
-    return this.photoRepository.insert({ user: req.user, ...photo });
+  post(@Req() req: GetUserAuthInfoRequest, @Body() article: Article) {
+    return this.articleRepository.insert({ user: req.user, ...article });
   }
 
   @Put('/:id')
-  put(@Param('id') id: number, @Body() photo: Photo) {
-    return this.photoRepository.update(id, photo);
+  put(@Param('id') id: number, @Body() article: Article) {
+    return this.articleRepository.update(id, article);
   }
 
   @Delete('/:id')
   remove(@Param('id') id: number) {
-    return this.photoRepository.remove({ id } as Photo);
+    return this.articleRepository.remove({ id } as Article);
   }
 }

@@ -10,7 +10,7 @@ import { Length } from 'class-validator';
 import { User } from './User';
 
 @Entity()
-export class Photo {
+export class Article {
   @PrimaryGeneratedColumn()
   id: number;
 

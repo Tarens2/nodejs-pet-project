@@ -18,7 +18,7 @@ export class Image {
   createdAt: Date;
 
   @ManyToOne(() => Article)
-  photo: Article;
+  article: Article;
 
   @Column()
   url: string;
