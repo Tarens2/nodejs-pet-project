@@ -17,12 +17,6 @@ const passport = require('passport');
 
 @JsonController('/auth')
 class AuthController {
-  @Get('/me')
-  @UseBefore(passport.authenticate('jwt'))
-  getMe(@Req() req: GetUserAuthInfoRequest) {
-    return req.user;
-  }
-
   @Post('/login')
   @UseBefore(passport.authenticate('local'))
   login(@Req() request: GetUserAuthInfoRequest, @Res() response: Response) {

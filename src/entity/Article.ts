@@ -18,7 +18,7 @@ export class Article {
   @CreateDateColumn()
   createdAt: Date;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.articles)
   user: User;
 
   @Column()

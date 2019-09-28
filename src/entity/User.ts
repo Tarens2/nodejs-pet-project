@@ -6,10 +6,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BeforeInsert,
+  OneToMany,
 } from 'typeorm';
 import { Length } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 import generateRandomPassword from '../lib/generateRandomPassword';
+import { Article } from './Article';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -54,6 +56,9 @@ export class User {
   @Column()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Article, (article) => article.user)
+  articles: Article[];
 
   @BeforeInsert()
   hashPassword() {

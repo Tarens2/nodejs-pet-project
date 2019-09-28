@@ -7,8 +7,14 @@ import {
   Post,
   Put,
   Delete,
+  UseBefore,
+  Req,
 } from 'routing-controllers';
 import { User } from '../entity/User';
+import { GetUserAuthInfoRequest } from '../types/IGetUserAuthInfoReques';
+import { Article } from '../entity/Article';
+
+const passport = require('passport');
 
 @JsonController('/users')
 export default class UsersController {
@@ -17,6 +23,18 @@ export default class UsersController {
   @Get('')
   getAll() {
     return this.userRepository.find();
+  }
+
+  @Get('/me')
+  @UseBefore(passport.authenticate('jwt'))
+  getMe(@Req() req: GetUserAuthInfoRequest) {
+    return req.user;
+  }
+
+  @Get('/me/articles')
+  @UseBefore(passport.authenticate('jwt'))
+  getMyArticles(@Req() req: GetUserAuthInfoRequest) {
+    return getRepository(Article).find({ user: req.user });
   }
 
   @Get('/:id')
