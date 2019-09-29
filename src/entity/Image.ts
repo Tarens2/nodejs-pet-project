@@ -13,15 +13,15 @@ export class Image {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  @CreateDateColumn()
-  createdAt: Date;
-
   @ManyToOne(() => Article)
   article: Article;
 
   @Column()
   url: string;
+
+  @Column()
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Column()
   @UpdateDateColumn()

@@ -14,6 +14,8 @@ import {
 } from 'routing-controllers';
 import { Article } from '../entity/Article';
 import { GetUserAuthInfoRequest } from '../types/IGetUserAuthInfoReques';
+import { Image } from '../entity/Image';
+import { upload } from '../lib/uploadImageOnS3';
 
 const passport = require('passport');
 
@@ -29,6 +31,17 @@ export default class PhotosController {
   @Get('/:id')
   getOne(@Param('id') id: number) {
     return this.articleRepository.findOne(id);
+  }
+
+  @Post('/:id/images')
+  @UseBefore(upload.single('image'))
+  postImages(@Req() req, @Param('id') id: number) {
+    return getRepository(Image).save({
+      article: {
+        id,
+      },
+      url: req.file.location,
+    });
   }
 
   @Post('')
