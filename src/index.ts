@@ -8,11 +8,12 @@ import { useExpressServer } from 'routing-controllers';
 import { PORT } from './config';
 import withSeeds from './seed';
 import initStrategies from './initStrategies';
+import { errorsCatcher } from "./middlewares/errorsCatcher";
 
 const passport = require('passport');
 
 createConnection()
-  .then(async (connection) => {
+  .then(async connection => {
     const app = express();
 
     app.use(cors());
@@ -27,9 +28,11 @@ createConnection()
       controllers: [`${__dirname}/controllers/*.ts`],
     });
 
+    app.use(errorsCatcher);
+
     app.listen(PORT);
 
     await withSeeds(connection);
     console.log(`Server has started on port ${PORT}.\n`);
   })
-  .catch((error) => console.log(error));
+  .catch(error => console.log(error));

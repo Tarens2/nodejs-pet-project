@@ -45,14 +45,14 @@ class AuthController {
       { expiresIn: '1h' },
     );
 
-    res.send({ token, user: req.user });
+    return { token, user: req.user };
   }
 
   @Post('/register')
   @UseBefore(
     body('username')
       .exists({ checkFalsy: true })
-      .custom(async (value) => {
+      .custom(async value => {
         const userRepository = getRepository(User);
         const user: User = await userRepository.findOne({
           where: { username: value },

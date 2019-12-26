@@ -57,7 +57,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Article, (article) => article.user)
+  @OneToMany(() => Article, article => article.user)
   articles: Article[];
 
   @BeforeInsert()
