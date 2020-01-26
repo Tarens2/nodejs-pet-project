@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { Length } from 'class-validator';
 import { User } from './User';
+import { Image } from './Image';
 
 @Entity()
 export class Article {
@@ -18,8 +20,11 @@ export class Article {
   @CreateDateColumn()
   createdAt: Date;
 
-  @ManyToOne(() => User, (user) => user.articles)
+  @ManyToOne(() => User, user => user.articles)
   user: User;
+
+  @OneToMany(() => Image, image => image.article)
+  images: Image[];
 
   @Column()
   @UpdateDateColumn()
